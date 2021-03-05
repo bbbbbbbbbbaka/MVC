@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script>
+	// 动态创建dom元素
+	// dom：一个字符串，表示创建什么标签
+	// arr：一个对象，表示标签的行内属性，如果为null或者undefined就表示没有行内属性，就不会执行
+	// son：一个数组，如果数组内为一个字符串则appendchild一个文本节点，否则就执行函数的嵌套，用来创建子节点，如果为null或者undefined就表示没有子节点，就不会执行
+	// 返回值为一个标签,最后把这个标签放到某个标签里面就行了,比如appendchild()
+	function myCreateElement(dom,arr,son){
+	var div = document.createElement(dom)
+	if(arr !== null && arr !== undefined){
+		Object.keys(arr).forEach((k,index)=>{
+			div.setAttribute(k,arr[k])
+		})
+	}
+	if(son !== null & son !== undefined){
+		son.forEach((c,index)=>{
+			if(typeof c === 'string'){
+				var text=document.createTextNode(c)
+				text.data = c;
+				div.appendChild(text)
+			}else{
+				div.appendChild(c)
+			}
+		})
+	}
+	return div;
+ }
+
+	//  调用函数并把它放到body下面
+ document.body.appendChild(
+	myCreateElement('div',{class:'main'},[
+		myCreateElement('div',{class:'tab'}),
+		myCreateElement('div',{class:'dataTables_info'}),
+		myCreateElement('div',{class:'pag'},[
+			myCreateElement('a',{class:'left'},['←']),
+			myCreateElement('span',{class:'pan'},),
+			myCreateElement('a',{class:'right'},['→'])
+		])
+	])
+)
+</script>
+</html>

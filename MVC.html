@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="MVC.css">
+    </head>
+    <body>
+        <!-- <h1 class="logo">todos</h1>
+        <div class="MVCfather">
+            <div class="MVC"><span class="MVCspan" index="0">↓</span><input type="text" class="header" placeholder="What needs to be done?">
+            </div>
+            <div class="menu">
+                <span class="items"><strong style="padding-right: 3px; color: rgb(145, 144, 144);"></strong>items left</span>
+                <ul class="zhuangtai">
+                    <li class="All" status="true">All</li>
+                    <li class="Active" status="false">Active</li>
+                    <li class="Completed" status="false">Completed</li>
+                </ul>
+                <span class="Clear">Clear completed</span>
+            </div>
+        </div> -->
+				<script src="MVC.js"></script>
+         <!-- <script>
+				
+		var header = document.querySelector('.header')
+		var MVC = document.querySelector('.MVC')
+		var MVCspan = document.querySelector('.MVC-span')
+		var All = document.querySelector('.All')
+		var Active = document.querySelector('.Active')
+		var Completed = document.querySelector('.Completed')
+		var Clear = document.querySelector('.Clear')
+		var items = document.querySelector('.items').children[0]
+		var arr =[]
+		var is = 0
+		var data =[All,Active,Completed]
+		var datas = 0
+		header.focus();
+		// localStorage.setItem('data',JSON.stringify(data))
+
+			// localStorage.clear()
+		
+					// 获取localStorage里面的数据赋值给arr
+				if(JSON.parse(localStorage.getItem('item')) !== null){
+					JSON.parse(localStorage.getItem('item')).forEach((item,index)=>{
+						arr.push(item)
+					})
+					items.innerText = arr.length
+				
+				}
+
+				if(JSON.parse(localStorage.getItem('data')) !== null){
+					datas = JSON.parse(localStorage.getItem('data'))
+					data.forEach(item=>{
+						if(datas == item.getAttribute('class')){
+							console.log(1);
+							console.log(item);
+							item.setAttribute('status',true)
+							item.style.border ='1px solid #ccc'
+
+						}else{
+							item.setAttribute('status',false)
+						}
+					})
+				}
+			// console.log(typeof data[0].getAttribute('status'));
+
+			
+				//通过arr在页面打开或刷新时生成dom节点 
+				arr.forEach((item,index)=>{
+					MVC.appendChild(GenerateForm(header,item))
+				})
+	
+		// 当在header里面敲击回车时生成dom节点
+		header.addEventListener('keyup',e=>{
+			if(e.keyCode == 13){
+				MVC.appendChild(GenerateForm(header))			
+				header.value =''			
+					
+			}
+			items.innerText = arr.length
+		})
+
+			 
+			 arr.forEach((item,index)=>{
+				 if(is<item.id){
+					is = item.id
+				 }
+				 is++
+			 })
+			
+			//  生成dom节点
+			// header:默认存在的输入框，用来给产生的dom节点赋值
+			// creatDom：当页面打开或刷新时要生成的节点数
+		function GenerateForm(header,creatDom){
+			var son = document.createElement('div')
+			son.setAttribute('class','son')
+			son.setAttribute('id',is)
+			var checkbox = document.createElement('input')
+			checkbox.setAttribute('type','checkbox')
+			checkbox.setAttribute('class','check')
+			// var status = Completed.getAttribute('status')
+			
+			son.appendChild(checkbox)
+			var div = document.createElement('div')
+			div.setAttribute('class','content')
+			div.innerText = header.value
+		
+			son.appendChild(div)
+			var text = document.createElement('input')
+			text.setAttribute('type','input')
+			text.setAttribute('class','texted')
+			text.setAttribute('style','display: none')
+			son.appendChild(text)
+			var span = document.createElement('span')
+			span.setAttribute('class','delete')
+			span.innerText = 'x'
+			son.appendChild(span)
+
+			if(creatDom !== undefined){
+				// arr.push({'title':creatDom.title,'completed':creatDom.completed,'id':creatDom.id},)
+				div.innerText = creatDom.title;
+				checkbox.checked = creatDom.completed
+				son.setAttribute('id',creatDom.id)
+			}else{
+				arr.push({'title':div.innerText,'completed':checkbox.checked,'id':is++},)		
+			}
+			localStorage.setItem('item',JSON.stringify(arr))
+
+			// 页面进入或刷新时显示
+			if(Completed.getAttribute('status') == 'true'&& checkbox.checked ==false ){
+				son.style.display = 'none'
+				console.log(1);
+			}else if(Active.getAttribute('status') == 'true' && checkbox.checked == true){
+				son.style.display = 'none'
+			}
+			
+			// 复选框的点击事件
+			checkbox.addEventListener('click',e=>{
+				var local = JSON.parse( localStorage.getItem('item',arr))
+					local.forEach((item,index)=>{
+						if(local[index].id ==  checkbox.parentNode.getAttribute('id')){
+							arr[index].completed = !local[index].completed;
+							localStorage.setItem('item',JSON.stringify(arr));
+						}
+					})
+					// 当复选框为未选中状态而Completed这个标签属于选中状态则将当前复选框隐藏
+					var status = Completed.getAttribute('status')
+					if(status == 'true' && checkbox.checked == false){
+							checkbox.parentNode.style.display = 'none'
+						} 
+			})
+		
+			// 双击content这个标签的时候将本身隐藏再将下面的input显示出来，并把值传给arr localStorage 和下面的input
+			div.addEventListener('dblclick',e=>{
+				text.value = div.innerText;
+				div.style.display = 'none'
+				text.style.display = 'block'
+				text.focus();
+			})
+			// 当回车敲击texted这个类时将他本身隐藏再将上面的div显示出来，并把值传给 arr localStorage和上面的div
+			text.addEventListener('keyup',e=>{
+				if(e.keyCode == 13){
+					div.innerText = text.value;
+					text.style.display = 'none'
+					div.style.display = 'block'
+					var local = JSON.parse( localStorage.getItem('item',arr))
+					local.forEach((item,index)=>{
+						if(local[index].id ==  checkbox.parentNode.getAttribute('id')){
+							arr[index].title = div.innerText;
+							localStorage.setItem('item',JSON.stringify(arr));
+						}
+					})
+					text.blur();
+				}
+			})
+			//  当texted这个类的焦点失去时将他本身隐藏再将上面的div显示出来，并把值传给 arr localStorage和上面的div
+			text.addEventListener('blur',e=>{
+				div.innerText = text.value;
+					text.style.display = 'none'
+					div.style.display = 'block'
+					var local = JSON.parse( localStorage.getItem('item',arr))
+					local.forEach((item,index)=>{
+						if(local[index].id ==  checkbox.parentNode.getAttribute('id')){
+							arr[index].title = div.innerText;
+							localStorage.setItem('item',JSON.stringify(arr));
+						}
+					})
+					text.blur();
+			})
+			// 单个删除
+			span.addEventListener('click',e=>{
+			var local = JSON.parse( localStorage.getItem('item',arr))
+					local.forEach((item,index)=>{
+						if(local[index].id ==  checkbox.parentNode.getAttribute('id')){
+							span.parentNode.remove()
+							arr.splice(index,1)
+							localStorage.setItem('item',JSON.stringify(arr));
+							items.innerText = arr.length
+						}
+					})
+			})
+			return son
+		}
+
+		// 全选和取消全选
+		MVCspan.addEventListener('click',e=>{
+			var everyCheckbox = document.querySelectorAll('.check')
+			var index = MVCspan.getAttribute('index')
+			
+			if(index == 0){
+				everyCheckbox.forEach((item,i)=>{
+					item.checked = true
+					MVCspan.setAttribute('index',1)
+				})
+				arr.forEach((item,index)=>{
+					arr[index].completed = true;
+				})
+				localStorage.setItem('item',JSON.stringify(arr))
+			}else if(index == 1){
+				everyCheckbox.forEach((item,i)=>{
+					item.checked = false
+					MVCspan.setAttribute('index',0)
+				})
+				arr.forEach((item,index)=>{
+					arr[index].completed = false
+				})
+				localStorage.setItem('item',JSON.stringify(arr))
+			}
+		})
+
+		//显示全部
+		All.addEventListener('click',e=>{
+			var son = document.querySelectorAll('.son');
+			son.forEach((item,index)=>{
+				item.style.display = 'block'
+			})
+			xuanzhong(All)
+		})
+
+		//显示未选中
+		Active.addEventListener('click',e=>{
+			var son = document.querySelectorAll('.son');
+			son.forEach((item,index)=>{
+				if(item.children[0].checked !== false){
+					item.style.display = 'none'
+				}else{
+					item.style.display = 'block'
+				}
+			})
+			xuanzhong(Active)
+		})
+		// 显示选中
+		Completed.addEventListener('click',e=>{
+			var son = document.querySelectorAll('.son');
+			son.forEach((item,index)=>{
+				if(item.children[0].checked !== true){
+					item.style.display = 'none'
+				}else{
+					item.style.display = 'block'
+				}
+			})
+			xuanzhong(Completed)
+		})
+		// 删除选中
+		Clear.addEventListener('click',e=>{
+			var son = document.querySelectorAll('.son')
+			var k = 0;
+			son.forEach((item,index)=>{
+				if(item.children[0].checked == true){
+					arr.splice(index-k,1)
+					item.remove()
+				}
+				k++
+			})
+			items.innerText = arr.length
+			localStorage.setItem('item',JSON.stringify(arr));
+		})
+
+		function xuanzhong(btn){
+		
+			data.forEach((item,index)=>{
+				// if(item == btn){
+				// 	console.log(item);
+				// 	item.setAttribute('status',true)
+					
+				// }else{
+				// 	item.setAttribute('status',false)
+				// }
+					// console.log(item.getAttribute('status'));
+					// console.log(btn);
+				if(item==btn){
+				item.setAttribute('status',true);
+					datas= btn.getAttribute('class')
+				localStorage.setItem('data',JSON.stringify(datas))
+				btn.style.border = '1px solid #ccc'
+				}else{
+					data[index].setAttribute('status',false)
+					item.style =''
+				}
+			})
+			
+			
+		}
+         </script>  -->
+    </body>
+</html>
